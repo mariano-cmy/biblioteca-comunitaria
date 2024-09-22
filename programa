@@ -1,0 +1,37 @@
+CREATE TABLE Livros (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(255) NOT NULL,
+    autor VARCHAR(255) NOT NULL,
+    genero VARCHAR(100),
+    ano_publicacao INT,
+    isbn VARCHAR(20) UNIQUE,
+    disponivel BOOLEAN DEFAULT TRUE
+);
+CREATE TABLE Usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    telefone VARCHAR(20),
+    data_cadastro DATE DEFAULT CURRENT_DATE
+);
+CREATE TABLE Emprestimos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    livro_id INT,
+    data_emprestimo DATE DEFAULT CURRENT_DATE,
+    data_devolucao DATE,
+    FOREIGN KEY (usuario_id) REFERENCES Usuarios(id),
+    FOREIGN KEY (livro_id) REFERENCES Livros(id)
+);
+INSERT INTO Livros (titulo, autor, genero, ano_publicacao, isbn) 
+VALUES ('O Senhor dos Anéis', 'J.R.R. Tolkien', 'Fantasia', 1954, '978-0261102385');
+INSERT INTO Usuarios (nome, email, telefone) 
+VALUES ('Maria da Silva', 'maria@email.com', '1234-5678');
+INSERT INTO Emprestimos (usuario_id, livro_id) 
+VALUES (1, 1);  -- Onde 1 é o id do usuário e 1 é o id do livro
+SELECT * FROM Livros WHERE disponivel = TRUE;
+SELECT e.id, u.nome, l.titulo, e.data_emprestimo 
+FROM Emprestimos e
+JOIN Usuarios u ON e.usuario_id = u.id
+JOIN Livros l ON e.livro_id = l.id
+WHERE e.data_devolucao IS NULL;
